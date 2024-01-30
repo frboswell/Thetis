@@ -75,6 +75,8 @@ namespace Thetis
            set {verbose_error_code = value;}
         }
 
+		public string DTFlag;												// DECLARE DTGlag STRING VARIABLE; USED TO CONTROL AAT TUNE OPERATION
+
 		#endregion Variable declarations
 
 		public CATParser(Console c)
@@ -180,6 +182,9 @@ namespace Thetis
 						rtncmd = cmdlist.DN();
 						break;
 					case "DQ":
+						break;
+					case "DT":														// DEFINE CASE DT
+						rtncmd = cmdlist.DT(suffix);
 						break;
 					case "EX":
 						break;

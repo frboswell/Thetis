@@ -57,6 +57,8 @@ namespace Thetis
         private readonly int NCATtime = 50;
         public bool firstTimeCAT = true;
 
+		public string DTFlag = "DT1";										//DECLARE DTFlag STRING VARIABLE; USED TO CONTROL AAT TUEN OPRATION		
+
 		#endregion Variable Definitions
 
 		#region Constructors
@@ -185,8 +187,79 @@ namespace Thetis
 			return ZZSA();
 		}
 
-		// Sets or reads the frequency of VFO A
-		public string FA(string s)
+        public string DT(string s)
+        {
+            if (NCATs < NCATInit)                                                   // DELAY TIMER (may not be needed)
+            {
+                Thread.Sleep(NCATtime);
+                NCATs++;
+            }
+
+            if (s.Length == parser.nSet)                                            // DT SET COMMAND PROCESSING
+
+            {
+                if (Convert.ToInt32(s) > 0 && Convert.ToInt32(s) <= 2)
+                {
+
+                    if (s == "1")
+
+                    {
+                        DTFlag = "DT1";
+                        return "";
+                    }
+
+                    else if (DTFlag == "DT3" && s == "2")                            // IF DTFlag = DT3 (AAT TUNE PENDING)
+                    {
+                        DTFlag = "DT2";
+						console.TUN = true;														// SET DTFlag = DT2 & ASSERT TUN (AAT TUNE ACTIVE)
+
+                        return "";
+                    }
+
+                    else
+
+                        DTFlag = "DT1";                                               // TUNE NOT ACTIVE; PROCESS NORMALLY
+
+                    return "";
+                }
+                // NOT VALID TO SET DTFlag = DT3 FROM CAT COMMAND SO NO PROVISION FOR DT3 COMMAND
+                else
+                    return parser.Error1;
+            }
+
+
+            else if (s.Length == parser.nGet)                   // DT GET COMMAND PROCESSING
+
+            {
+                if (DTFlag == "DT3")                            // IF DTFlag = DT3 (AAT TUNE PENDING)
+                {
+                    return "1";                                 // ANSWERS  "DT1" for later restore at endd of AAT TUNE operation
+                }
+
+                else
+
+                {
+                    if (DTFlag == "DT1")
+                    {
+                        return "1";
+                    }                                            // DTFlag = DT1 (AAT TUNE IDLE)							
+
+                    else
+
+                    if (DTFlag == "DT2")
+
+                    { return "2"; }                              // DTFlag = DT2 (AAT TUNE ACTIVE)							
+                }
+
+            }
+            return parser.Error1;
+
+        }
+
+
+
+        // Sets or reads the frequency of VFO A
+        public string FA(string s)
 		{
 			//			if(s.Length == parser.nSet)
 			//			{
@@ -564,34 +637,90 @@ namespace Thetis
 
 		// Sets or reads the transceiver mode
 		public string MD(string s)
-		{
-            if (NCATs < NCATInit)
+        {
+            if (NCATs < NCATInit)                           // DELAY TIMER
             {
                 Thread.Sleep(NCATtime);
                 NCATs++;
             }
-			if(s.Length == parser.nSet)
-			{
-				if(Convert.ToInt32(s) > 0 && Convert.ToInt32(s) <= 9)
-				{
-					KString2Mode(s);
-					return "";
-				}
-				else
-					return parser.Error1;
-			}
-			else if(s.Length == parser.nGet)
-			{
+            if (s.Length == parser.nSet)                        // DT SET COMMAND PROCESSING
+            {
+                if (s == "6" && DTFlag == "DT1")            // AAT TUNE IDLE & MD6 COMMAND FROM AAT
+                {
+                    DTFlag = "DT3";                         // SET DTFlag TO AAT TUNE PENDING
 
-				return Mode2KString(console.RX1DSPMode);
+                    return "";                               // TRAP & DELAY MODE CHANGE (DONT SET MD6 (DIGL) MODE) NOW; DELAY LATER IF NORMAL MD6; COMMAND
+                }
 
-			}
-			else
-				return parser.Error1;
-		}
 
-		// Sets or reads the Mic Gain thumbwheel
-		public string MG(string s)
+                else if (Convert.ToInt32(s) > 0 && Convert.ToInt32(s) <= 9)  //IF NOT AAT TUNE PENDING & MD6 COMMAND CHANGE MODE NORMALLY 
+                {
+					if (DTFlag != "DT3" && DTFlag != "DT2")									// IF AAT TUEN PRNDING (DTFlag = "DT3") PROPSESS NORMALLY
+					{ KString2Mode(s); }
+
+                    return "";
+                }
+
+                else
+
+                    return parser.Error1;
+            }
+
+            else if (s.Length == parser.nGet)                                        // DT GET COMMAND PROCESSING
+            {
+                if (DTFlag == "DT3" || DTFlag == "DT2")                            // IF AAT TUNE PENDING OR ACTIVE AND GET MODE COMMAND (MD;), TELL AAT MODE IS MD6 (DIGL/AFSK);
+                                                                                   // THIS DEALS WITHH THE CASE WHERE THE AAT CHECKS THE MODE AFTER ISSUING MD6; COMMAND
+                {
+                    return "6";
+                }
+
+                else
+																					 //	 PROCESS AS NORMAL MD; COMMAND					
+
+                    return Mode2KString(console.RX1DSPMode);
+            }
+
+            else
+
+                return parser.Error1;
+
+        }
+
+
+
+
+
+
+        /* {
+        if (NCATs < NCATInit)
+        {
+            Thread.Sleep(NCATtime);
+            NCATs++;
+        }
+        if(s.Length == parser.nSet)
+        {
+            if(Convert.ToInt32(s) > 0 && Convert.ToInt32(s) <= 9)
+            {
+                KString2Mode(s);
+                return "";
+            }
+            else
+                return parser.Error1;
+        }
+        else if(s.Length == parser.nGet)
+        {
+
+            return Mode2KString(console.RX1DSPMode);
+
+        }
+        else
+            return parser.Error1;
+    }
+    */
+
+
+        // Sets or reads the Mic Gain thumbwheel
+        public string MG(string s)
 		{
 			int n;
 			if(s.Length == parser.nSet)	
@@ -820,14 +949,33 @@ namespace Thetis
 		// Sets or reads the transceiver receive mode status
 		// write only but spec shows an answer parameter for a read???
 		public string RX(string s)
-		{
+        {
+            if (console.TUN = true && DTFlag == "DT2")          // AAT TUNE ACTIVE & TUN ASSERTED
+
+            {
+                console.TUN = false;							// DE-ASSERT TUN 
+                console.CATPTT = false;							// PROCESS RX
+                return "";
+
+            }
+
+            else
+
+            {
+                console.CATPTT = false;                         // PROCESS RX; NORMALLY
+                return "";
+            }
+        }
+
+        /*{
 			console.CATPTT = false;
 			return "";
 			//return ZZTX("0");
 		}
+		*/
 
-		// Sets or reads the variable DSP filter high side
-		public string SH(string s)
+        // Sets or reads the variable DSP filter high side
+        public string SH(string s)
 		{
 			if(s.Length == parser.nSet)
 			{
@@ -968,14 +1116,33 @@ namespace Thetis
 		// will eventually need eiter Commander change or ZZ code
 		// since it is not CAT compliant as it is
 		public string TX(string s)
-		{
-			console.CATPTT = true;
-			return "";
-			//return ZZTX("1");
-		}
+        {
 
-		//Moves the VFO A frequency up by the step size set on the console
-		public string UP()
+            if (DTFlag == "DT2")																// AAT TUNE IS ACTIVE
+            {
+                console.TUN = true;
+               
+                return "";
+            }
+
+            else
+
+                console.CATPTT = true;															// PROCESS TX NORMALLY IF AAT TUNE NOT ACTIVE
+
+            return "";
+
+        }
+
+		// ORIGINAL T2.10.3.6 dev TX; CODE
+
+     /* {
+        console.CATPTT = true;
+        return ""; 
+		}
+	*/
+
+        //Moves the VFO A frequency up by the step size set on the console
+        public string UP()
 		{
 			//			int step = console.StepSize;
 			//			double[] wheel_tune_list;
