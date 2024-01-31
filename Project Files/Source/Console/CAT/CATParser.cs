@@ -183,7 +183,7 @@ namespace Thetis
 						break;
 					case "DQ":
 						break;
-					case "DT":														// DEFINE CASE DT
+					case "DT":																	// DEFINE CASE DT
 						rtncmd = cmdlist.DT(suffix);
 						break;
 					case "EX":

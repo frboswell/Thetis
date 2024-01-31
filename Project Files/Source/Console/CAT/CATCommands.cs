@@ -23,7 +23,11 @@ Modifications to support the Behringer Midi controllers
 by Chris Codella, W2PA, April 2017.  Indicated by //-W2PA comment lines.
 Added extended CAT commands for APF funtions - May 2017.
 */
-
+/*
+ * 
+ * ADD DETAILED DOCUMENTATION HERE
+ * 
+*/
 
 using System;
 using System.Diagnostics;
@@ -57,7 +61,7 @@ namespace Thetis
         private readonly int NCATtime = 50;
         public bool firstTimeCAT = true;
 
-		public string DTFlag = "DT1";										//DECLARE DTFlag STRING VARIABLE; USED TO CONTROL AAT TUEN OPRATION		
+		public string DTFlag = "DT1";															//DECLARE DTFlag STRING VARIABLE; USED TO CONTROL AAT TUNE OPRATION		
 
 		#endregion Variable Definitions
 
@@ -189,13 +193,13 @@ namespace Thetis
 
         public string DT(string s)
         {
-            if (NCATs < NCATInit)                                                   // DELAY TIMER (may not be needed)
+            if (NCATs < NCATInit)														 // DELAY TIMER 
             {
                 Thread.Sleep(NCATtime);
                 NCATs++;
             }
 
-            if (s.Length == parser.nSet)                                            // DT SET COMMAND PROCESSING
+            if (s.Length == parser.nSet)												// DT SET COMMAND PROCESSING
 
             {
                 if (Convert.ToInt32(s) > 0 && Convert.ToInt32(s) <= 2)
@@ -211,29 +215,29 @@ namespace Thetis
                     else if (DTFlag == "DT3" && s == "2")                            // IF DTFlag = DT3 (AAT TUNE PENDING)
                     {
                         DTFlag = "DT2";
-						console.TUN = true;														// SET DTFlag = DT2 & ASSERT TUN (AAT TUNE ACTIVE)
+						console.TUN = true;											// SET DTFlag = DT2 & ASSERT TUN (AAT TUNE ACTIVE)
 
                         return "";
                     }
 
                     else
 
-                        DTFlag = "DT1";                                               // TUNE NOT ACTIVE; PROCESS NORMALLY
+                        DTFlag = "DT1";                                            // TUNE NOT ACTIVE; PROCESS NORMALLY
 
                     return "";
                 }
-                // NOT VALID TO SET DTFlag = DT3 FROM CAT COMMAND SO NO PROVISION FOR DT3 COMMAND
+																				 // NOT VALID TO SET DTFlag = DT3 FROM CAT COMMAND SO NO PROVISION FOR DT3 COMMAND
                 else
                     return parser.Error1;
             }
 
 
-            else if (s.Length == parser.nGet)                   // DT GET COMMAND PROCESSING
+            else if (s.Length == parser.nGet)									   // DT GET COMMAND PROCESSING
 
             {
-                if (DTFlag == "DT3")                            // IF DTFlag = DT3 (AAT TUNE PENDING)
+                if (DTFlag == "DT3")											   // IF DTFlag = DT3 (AAT TUNE PENDING)
                 {
-                    return "1";                                 // ANSWERS  "DT1" for later restore at endd of AAT TUNE operation
+                    return "1";													 // ANSWERS  "DT1" for later restore at endd of AAT TUNE operation
                 }
 
                 else
@@ -242,13 +246,13 @@ namespace Thetis
                     if (DTFlag == "DT1")
                     {
                         return "1";
-                    }                                            // DTFlag = DT1 (AAT TUNE IDLE)							
+                    }															 // DTFlag = DT1 (AAT TUNE IDLE)							
 
                     else
 
                     if (DTFlag == "DT2")
 
-                    { return "2"; }                              // DTFlag = DT2 (AAT TUNE ACTIVE)							
+                    { return "2"; }												 // DTFlag = DT2 (AAT TUNE ACTIVE)							
                 }
 
             }
@@ -638,24 +642,24 @@ namespace Thetis
 		// Sets or reads the transceiver mode
 		public string MD(string s)
         {
-            if (NCATs < NCATInit)                           // DELAY TIMER
+            if (NCATs < NCATInit)													// DELAY TIMER
             {
                 Thread.Sleep(NCATtime);
                 NCATs++;
             }
-            if (s.Length == parser.nSet)                        // DT SET COMMAND PROCESSING
+            if (s.Length == parser.nSet)											 // DT SET COMMAND PROCESSING
             {
-                if (s == "6" && DTFlag == "DT1")            // AAT TUNE IDLE & MD6 COMMAND FROM AAT
+                if (s == "6" && DTFlag == "DT1")									 // AAT TUNE IDLE & MD6 COMMAND FROM AAT
                 {
-                    DTFlag = "DT3";                         // SET DTFlag TO AAT TUNE PENDING
+                    DTFlag = "DT3";													 // SET DTFlag TO AAT TUNE PENDING
 
-                    return "";                               // TRAP & DELAY MODE CHANGE (DONT SET MD6 (DIGL) MODE) NOW; DELAY LATER IF NORMAL MD6; COMMAND
+                    return "";														 // TRAP & DELAY MODE CHANGE (DONT SET MD6 (DIGL) MODE) NOW; DELAY LATER IF NORMAL MD6; COMMAND
                 }
 
 
-                else if (Convert.ToInt32(s) > 0 && Convert.ToInt32(s) <= 9)  //IF NOT AAT TUNE PENDING & MD6 COMMAND CHANGE MODE NORMALLY 
+                else if (Convert.ToInt32(s) > 0 && Convert.ToInt32(s) <= 9)			//IF NOT AAT TUNE PENDING & MD6 COMMAND CHANGE MODE NORMALLY 
                 {
-					if (DTFlag != "DT3" && DTFlag != "DT2")									// IF AAT TUEN PRNDING (DTFlag = "DT3") PROPSESS NORMALLY
+					if (DTFlag != "DT3" && DTFlag != "DT2")							// IF AAT TUEN PRNDING (DTFlag = "DT3") PROPSESS NORMALLY
 					{ KString2Mode(s); }
 
                     return "";
@@ -666,7 +670,7 @@ namespace Thetis
                     return parser.Error1;
             }
 
-            else if (s.Length == parser.nGet)                                        // DT GET COMMAND PROCESSING
+            else if (s.Length == parser.nGet)                                       // DT GET COMMAND PROCESSING
             {
                 if (DTFlag == "DT3" || DTFlag == "DT2")                            // IF AAT TUNE PENDING OR ACTIVE AND GET MODE COMMAND (MD;), TELL AAT MODE IS MD6 (DIGL/AFSK);
                                                                                    // THIS DEALS WITHH THE CASE WHERE THE AAT CHECKS THE MODE AFTER ISSUING MD6; COMMAND
@@ -950,11 +954,11 @@ namespace Thetis
 		// write only but spec shows an answer parameter for a read???
 		public string RX(string s)
         {
-            if (console.TUN = true && DTFlag == "DT2")          // AAT TUNE ACTIVE & TUN ASSERTED
+            if (console.TUN = true && DTFlag == "DT2")							// AAT TUNE ACTIVE & TUN ASSERTED
 
-            {
-                console.TUN = false;							// DE-ASSERT TUN 
-                console.CATPTT = false;							// PROCESS RX
+            {	
+                console.TUN = false;											// DE-ASSERT TUN 
+                console.CATPTT = false;											// PROCESS RX
                 return "";
 
             }
@@ -962,7 +966,7 @@ namespace Thetis
             else
 
             {
-                console.CATPTT = false;                         // PROCESS RX; NORMALLY
+                console.CATPTT = false;											// PROCESS RX; NORMALLY
                 return "";
             }
         }
@@ -1120,7 +1124,8 @@ namespace Thetis
 
             if (DTFlag == "DT2")																// AAT TUNE IS ACTIVE
             {
-                console.TUN = true;
+                console.CATPTT = true;															// PROCESS TX;
+                console.TUN = true;																// ASSERT TUN
                
                 return "";
             }
