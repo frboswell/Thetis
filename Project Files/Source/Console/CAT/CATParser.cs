@@ -82,7 +82,7 @@ namespace Thetis
         }
 
 		
-		public string DTFlag;			// DECLARE DTGlag STRING VARIABLE; USED TO CONTROL AAT TUNE OPERATION
+		public string DTFlag;			// DECLARE DTFlag STRING VARIABLE; USED TO CONTROL AAT TUNE OPERATION
 
 		#endregion Variable declarations
 
