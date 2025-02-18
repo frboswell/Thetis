@@ -81,12 +81,8 @@ namespace Thetis
            set {verbose_error_code = value;}
         }
 
-		/*
-
-		ADD DTFlag DECLARATION HERE.
-
-		*/
-		public string DTFlag = "DT1";
+		
+		public string DTFlag;			// DECLARE DTGlag STRING VARIABLE; USED TO CONTROL AAT TUNE OPERATION
 
 		#endregion Variable declarations
 
