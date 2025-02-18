@@ -20,6 +20,12 @@
 // You may contact the author via email at: k5kdn@arrl.net
 //=================================================================
 
+/*
+
+INtRODUCTORY COMMENTS HERE. THIS IS T-v21038.acom-A
+
+*/
+
 
 using System;
 using System.Xml;
@@ -74,6 +80,12 @@ namespace Thetis
            get { return verbose_error_code;}
            set {verbose_error_code = value;}
         }
+
+		/*
+
+		ADD DTFlag DECLARATION HERE.
+
+		*/
 
 		#endregion Variable declarations
 
@@ -181,6 +193,9 @@ namespace Thetis
 						break;
 					case "DQ":
 						break;
+						/* ADD DT CASE HERE.
+
+						*/
 					case "EX":
 						break;
 					case "FA":
