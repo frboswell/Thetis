@@ -86,6 +86,7 @@ namespace Thetis
 		ADD DTFlag DECLARATION HERE.
 
 		*/
+		public string DTFlag = "DT1";
 
 		#endregion Variable declarations
 
@@ -193,9 +194,9 @@ namespace Thetis
 						break;
 					case "DQ":
 						break;
-						/* ADD DT CASE HERE.
-
-						*/
+					case "DT":										// DEFINE CASE DT
+						rtncmd = cmdlist.DT(suffix);
+						break;
 					case "EX":
 						break;
 					case "FA":
