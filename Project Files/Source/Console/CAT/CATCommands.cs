@@ -688,6 +688,7 @@ public string DT(string s)
                 return parser.Error1;
 
         }
+		
 		// Sets or reads the transceiver mode
 		/*public string MD(string s)
 		{
@@ -1136,6 +1137,7 @@ public string DT(string s)
             return "";
 
         }
+		
 		/*
 		// Sets the transmitter on, write only
 		// will eventually need eiter Commander change or ZZ code
@@ -1147,7 +1149,7 @@ public string DT(string s)
 			//return ZZTX("1");
 		}
 		*/
-		
+
 		//Moves the VFO A frequency up by the step size set on the console
 		public string UP()
 		{
