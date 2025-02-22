@@ -46,7 +46,7 @@ namespace Thetis
             string version = Common.GetVerNum() + sRevision;
             string s = "Thetis";
 
-            string sBits = Common.Is64Bit ? ".acom x64" : " x86";
+            string sBits = Common.Is64Bit ? " x64" : " x86";
 
             s += " v" + version + sBits;
             s += " (" + VersionInfo.BuildDate + ")<FW>";  //[2.10.2.2]MW0LGE use the auto generated class from pre build event for the BuildDate
