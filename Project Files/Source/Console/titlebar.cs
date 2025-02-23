@@ -38,6 +38,7 @@ namespace Thetis
     class TitleBar
     {
         public const string BUILD_NAME = "";
+        public const string ACOM_VERSION = "-A"
         public static string GetString(bool bWithFirmware = true)
         {
             string sRevision = "." + Common.GetRevision();
@@ -46,7 +47,7 @@ namespace Thetis
             string version = Common.GetVerNum() + sRevision;
             string s = "Thetis";
 
-            string sBits = Common.Is64Bit ? ".acom x64" : " x86";
+            string sBits = Common.Is64Bit ? ".acom" + ACOM_VERSION +  " x64" : " x86";
 
             s += " v" + version + sBits;
             s += " (" + VersionInfo.BuildDate + ")<FW>";  //[2.10.2.2]MW0LGE use the auto generated class from pre build event for the BuildDate
