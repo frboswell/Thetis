@@ -92,7 +92,7 @@ Addition of ACOM Auto Tune support results in changes to CATParser, CATCommands,
 
 In CATParser, DT command is added.
 In CATCommands, DT command is added, MD, RX, and TX commands are modified.
-In TitleBar, changea are added to show acom version in title bar.
+In TitleBar, changes are added to show acom version in title bar.
 
 */
 
