@@ -86,6 +86,8 @@ only as part of an AAT TUNE operation.
 	TX and RX commands from AATs will need to be handled in a way that uses the Thetis TUN feature instead. After further review/testing, it appears that asserting TUN will 
 override the TX AND RX commands.
 
+These cooment apply also to the CATCommands class.
+
 
 */
 
