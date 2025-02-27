@@ -90,6 +90,8 @@ These comments apply also to the CATCommands class.
 
 Addition of ACOM Auto Tune support results in changes to CATParser, CATCommands, CATStructs, and TitleBar classes. 
 
+In CATCommands, DT command is added, MD, RX, and TX commands are modified.
+In TitleBar, changea are added to show acom version in title bar.
 
 */
 
